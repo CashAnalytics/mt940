@@ -15,6 +15,7 @@ module MT940Structured::Parsers::Generic
         transaction = MT940::Transaction.new(amount: type * ($4 + '.' + $5).to_f)
         transaction.type = $3
         transaction.date = parse_date($1)
+        transaction.date_accounting = date_accounting(transaction.date, $2)
         if $7.strip.start_with?("NONREF")
           transaction.customer_reference = "NONREF"
           bank_ref = $8.nil? ? '' : $8
@@ -23,7 +24,6 @@ module MT940Structured::Parsers::Generic
           transaction.customer_reference = $7.strip
           transaction.bank_reference = $8
         end
-        transaction.date_accounting = date_accounting(transaction.date, $2)
         transaction
       end
     end
