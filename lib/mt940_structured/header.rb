@@ -28,8 +28,8 @@ module MT940Structured
         MT940Structured::Parsers::Triodos::Parser.new
       elsif @raw_lines[0].match(R_ING)
         MT940Structured::Parsers::Ing::Parser.new
-      elsif @raw_lines[0].match(R_DEUTSCHE_BANK)
-         MT940Structured::Parsers::DeutscheBank::Parser.new
+      # elsif @raw_lines[0].match(R_DEUTSCHE_BANK)
+      #    MT940Structured::Parsers::DeutscheBank::Parser.new
       elsif @raw_lines[0].match(R_KNAB)
         MT940Structured::Parsers::Knab::Parser.new
       elsif @raw_lines[0].match(R_VAN_LANSCHOT)
