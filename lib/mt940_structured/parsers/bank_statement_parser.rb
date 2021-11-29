@@ -32,14 +32,14 @@ module MT940Structured::Parsers
         @bank_statement.bank_account = iban_to_account(@bank_statement.bank_account_iban)
         @is_structured_format = true
       when /^:\d{2}:\d+\/(\d+)$/
-        @bank_statement.bank_account = $1.gsub(/^0+/, '')
+        @bank_statement.bank_account = $1
         @is_structured_format = true
       when /^:\d{2}:\D*(\d*)/
         # Rolled back to previous as the account number ($1) was getting truncated when it had a -
         # Also added the removal of leading 0's to the original
         # @bank_statement.bank_account = $1.gsub(/\D/, '').gsub(/^0+/, '')
         # @bank_statement.bank_account = line[4 .. -1] #original
-        @bank_statement.bank_account = line[4 .. -1].gsub(/^0+/, '')
+        @bank_statement.bank_account = line[4 .. -1]
         @is_structured_format = false
        when /^:\d{2}:IE/
           #puts "B4"
@@ -47,7 +47,7 @@ module MT940Structured::Parsers
           @bank_statement.bank_account = iban_to_account(@bank_statement.bank_account_iban)
           @is_structured_format = true
       when /^:\d{2}P:(\d*)\s.*/
-        @bank_statement.bank_account = $1.gsub(/^0+/, '')
+        @bank_statement.bank_account = $1
         @is_structured_format = false
        else
           #puts "B5"
