@@ -29,7 +29,7 @@ module MT940Structured::Parsers::Generic
     end
 
     def enrich_transaction(transaction, line_86)
-      line_86 = line_86.gsub("\r\n", "").gsub("\n", "")
+      line_86 = line_86.delete("\r\n")
       if line_86.match(/^:86:(.*)$/)
         transaction.description = [transaction.description, $1].join(" ").strip
       end
