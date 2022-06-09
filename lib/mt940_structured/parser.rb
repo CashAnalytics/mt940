@@ -1,4 +1,4 @@
-
+require 'rchardet'
 module MT940Structured
   class Parser
     def self.parse_mt940(path, join_lines_by = ' ')
