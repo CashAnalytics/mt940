@@ -33,7 +33,7 @@ module MT940Structured::Parsers
         @is_structured_format = true
       when /^:\d{2}:\d+\/(\d+)$/
         @bank_statement.bank_account = $1
-        @bank_statement.bank_account_bic = line[4, 18]
+        @bank_statement.bank_account_bic = line[4 .. -1]
         @is_structured_format = true
       when /^:\d{2}:\D*(\d*)/
         # Rolled back to previous as the account number ($1) was getting truncated when it had a -
