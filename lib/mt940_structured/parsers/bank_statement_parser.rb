@@ -35,6 +35,8 @@ module MT940Structured::Parsers
         @bank_statement.bank_account = $1
         @bank_statement.bank_account_bic = line[4 .. -1]
         @is_structured_format = true
+      when /^:\d{2}:([A-Z]\d{8})EUR/
+        @bank_statement.bank_account = $1.strip
       when /^:\d{2}:\D*(\d*)/
         # Rolled back to previous as the account number ($1) was getting truncated when it had a -
         # Also added the removal of leading 0's to the original
@@ -70,6 +72,7 @@ module MT940Structured::Parsers
         transaction.bank_account_iban = @bank_statement.bank_account_iban
         transaction.currency = @bank_statement.previous_balance.currency
         transaction.bank = @bank
+        transaction.original_payload = line_61
       rescue
         err= "Problem parsing a transaction: " + line_61
         #puts err
@@ -81,6 +84,7 @@ module MT940Structured::Parsers
     def parse_line_86(line)
       #Test to see if this is a line 86 after a balance. We disregard
       return if @transaction_parser.nil?
+      @bank_statement.transactions.last.original_payload << "\n#{line}"
       @transaction_parser.enrich_transaction(@bank_statement.transactions.last, line)
     end
 

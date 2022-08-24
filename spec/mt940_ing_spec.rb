@@ -154,7 +154,7 @@ describe "ING" do
       end
 
       it 'have a description' do
-        expect(@transaction.description).to eq('kilometervergoed ing 2e kwartaal 2013')
+        expect(@transaction.description).to eq('kilometervergoeding 2e kwartaal 2013')
       end
 
       it 'returns the contra_account' do
@@ -171,7 +171,7 @@ describe "ING" do
       end
 
       it 'have a description' do
-        expect(@transaction.description).to eq('BELASTINGDIENST BTW 2e kwartaal 2013 SCOR/CUR/8850426741301240')
+        expect(@transaction.description).to eq('BELASTINGDIENST BTW 2e kwartaal 2013SCOR/CUR/8850426741301240')
       end
 
       it 'has an account and iban' do
@@ -211,7 +211,7 @@ describe "ING" do
       end
 
       it 'have a description' do
-        expect(@transaction.description).to eq('J AAP kilometervergoeding 3e kwart aal')
+        expect(@transaction.description).to eq('J AAP kilometervergoeding 3e kwartaal')
       end
 
       it 'has an account and iban' do
@@ -234,7 +234,7 @@ describe "ING" do
     end
 
     it 'has a description' do
-      expect(@transaction.description).to eq('NL10XXX100020000000 01000 00000000 000000000000-AAAA12345678 Premie xxxxxxxxxxxxxxxxxxxxxxx')
+      expect(@transaction.description).to eq('NL10XXX100020000000 0100000000000 000000000000-AAAA12345678 Premie xxxxxxxxxxxxxxxxxxxxxxx')
     end
 
     it 'has a contra account' do
@@ -259,7 +259,7 @@ describe "ING" do
     end
 
     it 'has a description' do
-      expect(@transaction.description).to eq('NL10XXX100020000000 01000 00000000 000000000000-AAAA12345678 Premie xxxxxxxxxxxxxxxxxxxxxxx')
+      expect(@transaction.description).to eq('NL10XXX100020000000 0100000000000 000000000000-AAAA12345678 Premie xxxxxxxxxxxxxxxxxxxxxxx')
     end
 
     it 'has a contra account' do
@@ -284,7 +284,7 @@ describe "ING" do
     end
 
     it 'has a description' do
-      expect(@transaction.description).to eq('GB40G01SDDCITI00000011091334 9087653421 NL0 001MKXD ADWORDS:3455667788:NL0001MKXD')
+      expect(@transaction.description).to eq('GB40G01SDDCITI00000011091334 9087653421 NL0001MKXD ADWORDS:3455667788:NL0001MKXD')
     end
 
     it 'has a contra account' do
@@ -309,7 +309,7 @@ describe "ING" do
     end
 
     it 'has a description' do
-      expect(@transaction.description).to eq('NL72 BOB998877665544 BOB213654789387485940392049 1234567898765432 Kenmerk: 3333.1111.2222.3333 Omschrijving: 987654321 01-01-2012 3 MND 9878878787 Servicecontract')
+      expect(@transaction.description).to eq('NL72BOB998877665544 BOB213654789387485940392049 1234567898765432 Kenmerk: 3333.1111.2222.3333 Omschrijving: 987654321 01-01-2012  3 MND 9878878787 Servicecontract')
     end
 
     it 'has a contra account' do
@@ -339,7 +339,7 @@ describe "ING" do
     end
 
     it 'has a description' do
-      expect(@transaction.description).to eq('22-08 -2014 Omschrijving')
+      expect(@transaction.description).to eq('22-08-2014 Omschrijving')
     end
 
     it 'has a contra account' do
@@ -359,7 +359,7 @@ describe "ING" do
     end
 
     it 'has parses transaction no 9 correclty' do
-      expect(@transactions[8].description).to eq("Factuurnr: 2015/123456789.00. Kijk voor meer informatie op KPN.com of Hi.nl")
+      expect(@transactions[8].description).to eq("Factuurnr: 2015/123456789.00. Kijk voor meer informatie op KPN.comof Hi.nl")
       expect(@transactions[8].contra_account_iban).to eq("NL75INGB0000012345")
     end
 
@@ -416,7 +416,7 @@ describe "ING" do
     end
 
     it 'has a description' do
-      expect(@transaction.description).to eq("RC afrekening betalingsverkeer  Factuurnr. 121212 7756           Betreft rekening 33.33.333      Periode: 01-04-201 4 / 30-06-2014")
+      expect(@transaction.description).to eq("RC afrekening betalingsverkeer  Factuurnr. 1212127756           Betreft rekening 33.33.333      Periode: 01-04-2014 / 30-06-2014")
     end
 
   end
@@ -497,7 +497,7 @@ describe "ING" do
     end
 
     it 'has a description reference' do
-      expect(@transaction.description).to eq 'KASSA VERZAMELFACTUUR DINSDAG 2 ABC-654321 05/31/2017 00 :00:00'
+      expect(@transaction.description).to eq 'KASSA VERZAMELFACTUUR DINSDAG 2 ABC-654321 05/31/2017 00:00:00'
     end
   end
 
@@ -515,4 +515,87 @@ describe "ING" do
 
   end
 
+  context 'ing savings account' do
+
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/ing_savings.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["V88888888"]
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+    it 'has the correct number of transactions' do
+      expect(@transactions.size).to eq(4)
+    end
+
+    context 'Transaction' do
+
+      it 'has original payload' do
+        expect(@transaction.original_payload).to eq(<<~STRING.chomp)
+          :61:2011271127D30000,00NTRFNONREF/TRCD/00370/
+          :86:/CNTP/NL27INGB0003333333/////REMI/USTD//Overboeking naar betaalrekening NL27INGB0003333333/
+        STRING
+      end
+
+      it 'have a bank_account' do
+        expect(@transaction.bank_account).to eq('V88888888')
+      end
+
+      it 'have an amount' do
+        expect(@transaction.amount).to eq(-30000)
+      end
+
+      it 'have a currency' do
+        expect(@transaction.currency).to eq('EUR')
+      end
+
+      it 'have a date' do
+        expect(@transaction.date).to eq(Date.new(2020, 11, 27))
+      end
+
+      it 'return its bank' do
+        expect(@transaction.bank).to eq('Ing')
+      end
+
+      it "should return the type" do
+        expect(@transaction.type).to eq('Overboeking buitenland')
+      end
+
+      it 'have a description' do
+        expect(@transaction.description).to eq('Overboeking naar betaalrekening NL27INGB0003333333')
+      end
+
+      it 'return the contra_account' do
+        expect(@transaction.contra_account_iban).to eq('NL27INGB0003333333')
+      end
+    end
+  end
+
+  context 'only line 61' do
+      before :each do
+        @file_name = File.dirname(__FILE__) + '/fixtures/ing/ing_only_line_61.txt'
+        @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)['1212121']
+        @transactions = @bank_statements.flat_map(&:transactions)
+        @transaction = @transactions.first
+      end
+
+      it 'has the correct number of transactions' do
+        expect(@transactions).to have(2).items
+      end
+
+      it 'has the correct bank reference' do
+        expect(@transaction.bank_reference).to eq '33272228171111'
+        expect(@transaction.amount).to eq -0.05
+
+        expect(@transactions.last.bank_reference).to eq '44469555505099'
+        expect(@transactions.last.amount).to eq -10.10
+      end
+
+      it 'has original payload' do
+        expect(@transaction.original_payload).to eq(<<~STRING.chomp)
+          :61:2110011001D0,05NODCNONREF//33272228171111/TRCD/09101/
+        STRING
+      end
+
+    end
 end

@@ -8,7 +8,6 @@ module MT940Structured
     R_KNAB = /KNABNL/
     R_VAN_LANSCHOT = /FVLBNL/
     R_SNS = /SNSBNL/
-    R_NEDBANK = /^Nedcor Nedbank/
     R_ASN = /ASNBNL/
     R_REGIO_BANK = /RBRBNL/
     R_MONEYOU = /MOYONL21/
@@ -36,8 +35,6 @@ module MT940Structured
         MT940Structured::Parsers::VanLanschot::Parser.new
       elsif @raw_lines[0].match(R_SNS) || @raw_lines[0].match(R_ASN) || @raw_lines[0].match(R_REGIO_BANK)
         MT940Structured::Parsers::Sns::Parser.new
-      elsif @raw_lines[0].match(R_NEDBANK)
-        MT940Structured::Parsers::Nedbank::Parser.new
       else
          MT940Structured::Parsers::Generic::Parser.new
         #raise UnsupportedBankError.new

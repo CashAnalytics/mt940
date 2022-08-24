@@ -33,11 +33,12 @@ module MT940Structured::Parsers
     end
 
     protected
+
     def validate_grouped_lines(lines)
       lines.each_with_index do |current_line, index|
         if index < (lines.length - 1)
-          next_line = lines[index+1]
-          next_line_type = next_line[1,2]
+          next_line = lines[index + 1]
+          next_line_type = next_line[1, 2]
           current_line_type = current_line[1, 2]
           next if NO_NEXT_LINES.include?(current_line_type)
           possible_next_line_starts = @next_lines_for[current_line_type]
@@ -47,17 +48,18 @@ module MT940Structured::Parsers
     end
 
     private
+
     def group_lines_by_tag(lines)
       result = []
       while !lines.empty? do
-        start_index = lines.index { |line| line.match(/^:20:/)} || 0
-        end_index = lines.index { |line| line.match(/^:62(F|M):/)} || 0
+        start_index = lines.index { |line| line.match(/^:20:/) }
+        end_index = lines.index { |line| line.match(/^:62(F|M):/) }
+        raise MT940Structured::InvalidFileContentError.new(%Q{Expected line of type 62 to be present in the file but was not}) if start_index && end_index.nil?
         optional_avail = lines.index { |line| line.match(/^:64:/)} 
         if optional_avail
           has_new_statement = lines[(start_index + 1)..optional_avail].index { |line| line.match(/^:20:/)}
           optional_avail = nil if has_new_statement
         end
-        return result if start_index==0 && end_index==0
         end_index = optional_avail if optional_avail && optional_avail > end_index
         if start_index && end_index > start_index
           result << lines[start_index..end_index]
