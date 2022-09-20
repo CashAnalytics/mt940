@@ -7,7 +7,7 @@ class MT940Structured::FileContent
   GIRO_NUMBER_LINE = /^P\d{6,}$/
 
   def initialize(raw_lines, join_lines_by = "\n")
-    @raw_lines = raw_lines
+    @raw_lines = raw_lines.map { |line| line.strip }
     @join_lines_by = join_lines_by
   end
 

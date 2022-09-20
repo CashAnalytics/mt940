@@ -34,7 +34,7 @@ module MT940Structured
     end
 
     def self.readfile(path)
-      File.open(path, 'r:bom|utf-8').readlines.map do |line|
+      File.open(path, 'r:bom|utf-8').readlines(chomp: true).map do |line|
       #IO.readlines(path, chomp: true).map do |line|
         line
           .gsub(/\u001A/, '') # remove eof chars in the middle of the string... yes it happens :-(
