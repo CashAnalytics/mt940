@@ -32,11 +32,11 @@ describe MT940Structured::Parsers::BankStatementParser do
     end
 
     it 'has the correct previous balance' do
-      expect(subject.previous_balance).to eq MT940::Balance.new(1147.95, Date.new(2013, 4, 2), "EUR")
+      expect(subject.previous_balance).to eq MT940::Balance.new(amount: 1147.95, date: Date.new(2013, 4, 2), currency: "EUR",last_statement_date: true)
     end
 
     it 'has the correct new balance' do
-      expect(subject.new_balance).to eq MT940::Balance.new(18846.34, Date.new(2013, 4, 4), "EUR")
+      expect(subject.new_balance).to eq MT940::Balance.new(amount: 18846.34, date: Date.new(2013, 4, 4), currency: "EUR",last_statement_date: true)
     end
 
     it "has 1 transaction" do
