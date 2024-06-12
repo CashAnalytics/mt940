@@ -9,5 +9,11 @@ module MT940
   ##
   # A Balance describes the amount of money you have on your bank account
   # at a certain moment in time.
-  Balance = Struct.new(:amount, :date, :currency)
+
+  #using an optional parameter
+  Balance = Struct.new(:amount, :date, :currency, :last_statement_date, keyword_init: true) do
+     def initialize(amount:, date:, currency:, last_statement_date: false)
+      super
+    end
+  end
 end
