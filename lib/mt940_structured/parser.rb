@@ -1,4 +1,3 @@
-require 'rchardet'
 module MT940Structured
   class Parser
     def self.parse_mt940(path, join_lines_by = "\n")
@@ -22,7 +21,6 @@ module MT940Structured
 
     def self.readstreamfile(stringio)
       stringio.readlines.map do |line|
-        line.sub!("\xEF\xBB\xBF", '')
         line
           .gsub(/\u001A/, '') # remove eof chars in the middle of the string... yes it happens :-(
       end
@@ -58,13 +56,11 @@ module MT940Structured
       else
         raise 'Error reading file'
       end
-      force_string_encoding(txt)
+      txt
     end
 
     def self.force_string_encoding(txt)
-      chardet = CharDet.detect(txt)
-      txt = txt.force_encoding('iso-8859-1').encode('utf-8') unless chardet['encoding'] == 'utf-8'
-      txt.scrub!
+      txt
     end
   end
 end
